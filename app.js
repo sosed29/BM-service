@@ -5,14 +5,12 @@
   const DEST_LAT = 45.072376;
   const DEST_LON = 39.021522;
   const DEST_NAME = "БМ автоцентр";
+
+  // ПРЯМАЯ ССЫЛКА НА ОРГАНИЗАЦИЮ В ЯНДЕКС.НАВИГАТОРЕ
+  const YANDEX_NAVI_ORG_URL = "https://yandex.com/maps/org/bm/131521270282?si=2mqumcbrd1fjz9jayxmg73ykq8";
+
   const MAPS_ORG_URL =
     "https://yandex.ru/maps/org/bm/131521270282/?ll=39.021522%2C45.072376&z=17";
-
-  // ВАЖНО: Ссылка на организацию в Яндекс.Навигаторе (ваша ссылка)
-  const YANDEX_NAVI_ORG_URL = "https://yandex.ru/navi/org/bm/131521270282?si=2mqumcbrd1fjz9jayxmg73ykq8";
-
-  // Схема для открытия в приложении Яндекс.Навигатор
-  const YANDEX_NAVI_SCHEME = "yandexnavi://org?id=131521270282";
 
   const IMG_FALLBACK = "img/placeholder.svg";
 
@@ -69,23 +67,13 @@
   }
 
   /**
-   * Открытие Яндекс.Навигатор с карточкой организации
-   * Сначала пытается открыть приложение, если не установлено - открывает веб-версию
+   * Открытие Яндекс.Карт/Навигатор с карточкой организации
+   * Просто открываем ссылку - браузер сам предложит открыть в приложении
    */
   function openYandexNavigator() {
-    console.log("Открываем Яндекс.Навигатор: " + YANDEX_NAVI_ORG_URL);
-
-    // Пытаемся открыть через схему (если приложение установлено)
-    window.location.href = YANDEX_NAVI_SCHEME;
-
-    // Если через 2 секунды не открылось, открываем веб-версию
-    setTimeout(() => {
-      window.open(YANDEX_NAVI_ORG_URL, "_blank", "noopener,noreferrer");
-    }, 2000);
-  }
-
-  function openMapsOrgFallback() {
-    window.open(MAPS_ORG_URL, "_blank", "noopener,noreferrer");
+    console.log("Открываем: " + YANDEX_NAVI_ORG_URL);
+    // Открываем ссылку в новой вкладке
+    window.open(YANDEX_NAVI_ORG_URL, "_blank", "noopener,noreferrer");
   }
 
   let toastTimeout = null;
@@ -117,7 +105,7 @@
   }
 
   function buildRoute() {
-    showToast("📍 Открываем Яндекс.Навигатор...");
+    showToast("📍 Открываем карту...");
     openYandexNavigator();
   }
 
