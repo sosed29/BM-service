@@ -7,7 +7,13 @@
   const DEST_NAME = "БМ автоцентр";
   const MAPS_ORG_URL =
     "https://yandex.ru/maps/org/bm/131521270282/?ll=39.021522%2C45.072376&z=17";
-  const NAVI_ORG_URL = `https://yandex.ru/navi/org/bm/131521270282?si=2mqumcbrd1fjz9jayxmg73ykq8`;
+
+  // Ссылка на организацию в Яндекс.Навигаторе (показывает карточку с информацией)
+  const YANDEX_NAVI_ORG_URL =
+    "https://yandex.ru/navi/org/bm/131521270282?si=2mqumcbrd1fjz9jayxmg73ykq8";
+
+  // Схема для открытия в приложении Яндекс.Навигатор
+  const YANDEX_NAVI_SCHEME = "yandexnavi://org?id=131521270282";
 
   const IMG_FALLBACK = "img/placeholder.svg";
 
@@ -21,28 +27,138 @@
 
   // --- МАССИВ УСЛУГ (22 карточки) ---
   const services = [
-    { title: "Эндоскопия", price: "2 000 ₽", desc: "Производим эндоскопию бензинового ДВС.", category: "engine" },
-    { title: "Замена свечей (за 4 шт.)", price: "от 1 000 ₽", desc: "Комплексная замена комплекта свечей зажигания.", category: "engine" },
-    { title: "Ремонт (переборка) тормозных суппортов", price: "2 000 ₽", desc: "Реставрация тормозных суппортов.", category: "brakes" },
-    { title: "Замена сайлентблоков задней балки", price: "7 000 ₽", desc: "Замена сайлентблоков задней балки легковых автомобилей.", category: "suspension" },
-    { title: "Замена рулевой рейки", price: "5 000 ₽", desc: "Замена рулевой рейки (съём-установка).", category: "steering" },
-    { title: "Замена ремней и цепей ГРМ", price: "5 000 ₽", desc: "Замена цепей и ремней ГРМ.", category: "engine" },
-    { title: "Замена радиатора печки со снятием торпедо", price: "10 000 ₽", desc: "Производим замену радиатора печки как со снятием торпедо, так и без. Многолетний опыт, гарантия.", category: "climate" },
-    { title: "Замена генератора", price: "2 500 ₽", desc: "Производим снятие-установку генераторов и стартеров любой сложности.", category: "electric" },
-    { title: "Замена ступичного подшипника", price: "2 000 ₽", desc: "Замена ступиц, подшипников на профессиональном оборудовании путем перепрессовки.", category: "suspension" },
-    { title: "Ремонт стартеров и генераторов", price: "5 000 ₽", desc: "Производим ремонт, дефектовку таких агрегатов как стартер и генератор. Гарантия на работы.", category: "electric" },
-    { title: "Ремонт рулевой рейки", price: "5 000 ₽", desc: "Грамотно производим ремонт рулевых реек, в том числе отечественных автомобилей. Гарантия.", category: "steering" },
-    { title: "Ремонт МКПП", price: "7 000 ₽", desc: "Производим грамотный ремонт механических коробок переключения передач, а так же обслуживание, замену масла.", category: "transmission" },
-    { title: "Замена сцепления МКПП", price: "5 000 ₽", desc: "Производим замену сцепления механических кпп. Стоимость услуги зависит от марки автомобиля.", category: "transmission" },
-    { title: "Аппаратная замена антифриза + промывка системы охлаждения", price: "2 500 ₽", desc: "Оказываем услуги по аппаратной замене антифриза, а также делаем промывку системы охлаждения в два этапа с применением химии.", category: "cooling" },
-    { title: "Замена тормозных колодок, дисков и барабанов", price: "1 000 ₽", desc: "Делаем замену колодок, тормозных дисков и барабанов. Также производим полный спектр обслуживания тормозной системы, в том числе с электроручником.", category: "brakes" },
-    { title: "Замена масла в АКПП", price: "2 000 ₽", desc: "Производим частичную замену масла в акпп, вариатора, ркпп и т. д. Замена фильтра со снятием поддона, замену фильтра с разбором акпп.", category: "transmission" },
-    { title: "Мойка радиаторов", price: "2 000 ₽", desc: "Производим мойку радиаторов автомобиля, так как забитые радиаторы приводят к перегреву системы охлаждения, а также плохой работе кондиционера.", category: "cooling" },
-    { title: "Заправка фреоном автокондиционеров", price: "500 ₽", desc: "Производим АППАРАТНУЮ заправку автокондиционеров, а также ремонт, обслуживание.", category: "ac" },
-    { title: "Регулировка Сход - развал", price: "1 500 ₽", desc: "Регулировка углов установки колёс производится на своевременно обслуженном и откалиброванном оборудование. Раз год обновляется база автомобилей.", category: "wheel" },
-    { title: "Ремонт ГБЦ", price: "10 000 ₽", desc: "Производим ремонт двигателей, ГБЦ, а также снятие-установку агрегатов.", category: "engine" },
-    { title: "Замена масла в двигателе", price: "1 000 ₽", desc: "Замена моторного масла и фильтра.", category: "engine" },
-    { title: "Другое", price: "по запросу", desc: "Иные виды работ — уточняйте по телефону, подберём решение под ваш случай.", category: "other" },
+    {
+      title: "Эндоскопия",
+      price: "2 000 ₽",
+      desc: "Производим эндоскопию бензинового ДВС.",
+      category: "engine",
+    },
+    {
+      title: "Замена свечей (за 4 шт.)",
+      price: "от 1 000 ₽",
+      desc: "Комплексная замена комплекта свечей зажигания.",
+      category: "engine",
+    },
+    {
+      title: "Ремонт (переборка) тормозных суппортов",
+      price: "2 000 ₽",
+      desc: "Реставрация тормозных суппортов.",
+      category: "brakes",
+    },
+    {
+      title: "Замена сайлентблоков задней балки",
+      price: "7 000 ₽",
+      desc: "Замена сайлентблоков задней балки легковых автомобилей.",
+      category: "suspension",
+    },
+    {
+      title: "Замена рулевой рейки",
+      price: "5 000 ₽",
+      desc: "Замена рулевой рейки (съём-установка).",
+      category: "steering",
+    },
+    {
+      title: "Замена ремней и цепей ГРМ",
+      price: "5 000 ₽",
+      desc: "Замена цепей и ремней ГРМ.",
+      category: "engine",
+    },
+    {
+      title: "Замена радиатора печки со снятием торпедо",
+      price: "10 000 ₽",
+      desc: "Производим замену радиатора печки как со снятием торпедо, так и без. Многолетний опыт, гарантия.",
+      category: "climate",
+    },
+    {
+      title: "Замена генератора",
+      price: "2 500 ₽",
+      desc: "Производим снятие-установку генераторов и стартеров любой сложности.",
+      category: "electric",
+    },
+    {
+      title: "Замена ступичного подшипника",
+      price: "2 000 ₽",
+      desc: "Замена ступиц, подшипников на профессиональном оборудовании путем перепрессовки.",
+      category: "suspension",
+    },
+    {
+      title: "Ремонт стартеров и генераторов",
+      price: "5 000 ₽",
+      desc: "Производим ремонт, дефектовку таких агрегатов как стартер и генератор. Гарантия на работы.",
+      category: "electric",
+    },
+    {
+      title: "Ремонт рулевой рейки",
+      price: "5 000 ₽",
+      desc: "Грамотно производим ремонт рулевых реек, в том числе отечественных автомобилей. Гарантия.",
+      category: "steering",
+    },
+    {
+      title: "Ремонт МКПП",
+      price: "7 000 ₽",
+      desc: "Производим грамотный ремонт механических коробок переключения передач, а так же обслуживание, замену масла.",
+      category: "transmission",
+    },
+    {
+      title: "Замена сцепления МКПП",
+      price: "5 000 ₽",
+      desc: "Производим замену сцепления механических кпп. Стоимость услуги зависит от марки автомобиля.",
+      category: "transmission",
+    },
+    {
+      title: "Аппаратная замена антифриза + промывка системы охлаждения",
+      price: "2 500 ₽",
+      desc: "Оказываем услуги по аппаратной замене антифриза, а также делаем промывку системы охлаждения в два этапа с применением химии.",
+      category: "cooling",
+    },
+    {
+      title: "Замена тормозных колодок, дисков и барабанов",
+      price: "1 000 ₽",
+      desc: "Делаем замену колодок, тормозных дисков и барабанов. Также производим полный спектр обслуживания тормозной системы, в том числе с электроручником.",
+      category: "brakes",
+    },
+    {
+      title: "Замена масла в АКПП",
+      price: "2 000 ₽",
+      desc: "Производим частичную замену масла в акпп, вариатора, ркпп и т. д. Замена фильтра со снятием поддона, замену фильтра с разбором акпп.",
+      category: "transmission",
+    },
+    {
+      title: "Мойка радиаторов",
+      price: "2 000 ₽",
+      desc: "Производим мойку радиаторов автомобиля, так как забитые радиаторы приводят к перегреву системы охлаждения, а также плохой работе кондиционера.",
+      category: "cooling",
+    },
+    {
+      title: "Заправка фреоном автокондиционеров",
+      price: "500 ₽",
+      desc: "Производим АППАРАТНУЮ заправку автокондиционеров, а также ремонт, обслуживание.",
+      category: "ac",
+    },
+    {
+      title: "Регулировка Сход - развал",
+      price: "1 500 ₽",
+      desc: "Регулировка углов установки колёс производится на своевременно обслуженном и откалиброванном оборудование. Раз год обновляется база автомобилей.",
+      category: "wheel",
+    },
+    {
+      title: "Ремонт ГБЦ",
+      price: "10 000 ₽",
+      desc: "Производим ремонт двигателей, ГБЦ, а также снятие-установку агрегатов.",
+      category: "engine",
+    },
+    {
+      title: "Замена масла в двигателе",
+      price: "1 000 ₽",
+      desc: "Замена моторного масла и фильтра.",
+      category: "engine",
+    },
+    {
+      title: "Другое",
+      price: "по запросу",
+      desc: "Иные виды работ — уточняйте по телефону, подберём решение под ваш случай.",
+      category: "other",
+    },
   ];
 
   const categoryLabels = {
@@ -64,43 +180,15 @@
   }
 
   /**
-   * Функция построения маршрута в Яндекс.Навигатор
+   * Открытие Яндекс.Навигатор с карточкой организации
    */
   function openYandexNavigator() {
-    // Прямая ссылка на организацию в Яндекс.Навигаторе
-    // Формат: yandexnavi://build_route_on_map?lat_to=45.072376&lon_to=39.021522&name=БМ%20автоцентр
-    const encodedName = encodeURIComponent(DEST_NAME);
-    const yandexNaviUrl = `yandexnavi://build_route_on_map?lat_to=${DEST_LAT}&lon_to=${DEST_LON}&name=${encodedName}`;
+    // Сначала пробуем открыть через схему (если приложение установлено)
+    window.location.href = YANDEX_NAVI_SCHEME;
 
-    // Fallback: если навигатор не открылся, открываем веб-версию
-    const webUrl = NAVI_ORG_URL;
-
-    // Пытаемся открыть навигатор
-    window.location.href = yandexNaviUrl;
-
-    // Если через 2 секунды не открылся, открываем в браузере
+    // Если через 2 секунды не открылось, открываем веб-версию
     setTimeout(() => {
-      window.open(webUrl, "_blank", "noopener,noreferrer");
-    }, 2000);
-  }
-
-  /**
-   * Функция построения маршрута с геолокацией
-   */
-  function openYandexNavigatorWithRoute(lat, lon) {
-    const encodedName = encodeURIComponent(DEST_NAME);
-    // Строим маршрут от текущей позиции до организации
-    const yandexNaviUrl = `yandexnavi://build_route_on_map?lat_from=${lat}&lon_from=${lon}&lat_to=${DEST_LAT}&lon_to=${DEST_LON}&name=${encodedName}`;
-
-    // Fallback: карты с маршрутом
-    const mapsUrl = `https://yandex.ru/maps/?rtext=${lat},${lon}~${DEST_LAT},${DEST_LON}&rtt=auto`;
-
-    // Пытаемся открыть навигатор
-    window.location.href = yandexNaviUrl;
-
-    // Если через 2 секунды не открылся, открываем карты в браузере
-    setTimeout(() => {
-      window.open(mapsUrl, "_blank", "noopener,noreferrer");
+      window.open(YANDEX_NAVI_ORG_URL, "_blank", "noopener,noreferrer");
     }, 2000);
   }
 
@@ -137,49 +225,8 @@
   }
 
   function buildRoute() {
-    if (!navigator.geolocation) {
-      showToast("❌ Геолокация недоступна. Открываем навигатор.", true);
-      openYandexNavigator();
-      return;
-    }
-
-    showToast("📍 Определяем ваше местоположение...");
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        console.log(`📍 Текущее местоположение: ${lat}, ${lon}`);
-        openYandexNavigatorWithRoute(lat, lon);
-      },
-      (error) => {
-        let errorMessage = "";
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = "❌ Разрешите доступ к геолокации";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = "❌ Не удалось определить местоположение";
-            break;
-          case error.TIMEOUT:
-            errorMessage = "❌ Превышено время ожидания";
-            break;
-          default:
-            errorMessage = "❌ Ошибка определения местоположения";
-            break;
-        }
-        showToast(errorMessage, true);
-        // Если не удалось определить местоположение, открываем навигатор без маршрута
-        setTimeout(() => {
-          openYandexNavigator();
-        }, 1500);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 30000
-      }
-    );
+    showToast("📍 Открываем Яндекс.Навигатор...");
+    openYandexNavigator();
   }
 
   function imgFallbackAttr() {
@@ -218,10 +265,10 @@
 
   function initFilters() {
     const chips = document.querySelectorAll(".filter-chip");
-    chips.forEach(chip => {
+    chips.forEach((chip) => {
       chip.addEventListener("click", () => {
         const filter = chip.getAttribute("data-filter") || "all";
-        chips.forEach(c => c.classList.toggle("is-active", c === chip));
+        chips.forEach((c) => c.classList.toggle("is-active", c === chip));
         renderCatalog(filter);
       });
     });
@@ -237,7 +284,7 @@
       burger.classList.toggle("is-open", !isOpen);
       burger.setAttribute("aria-expanded", !isOpen ? "true" : "false");
     });
-    nav.querySelectorAll("a").forEach(a => {
+    nav.querySelectorAll("a").forEach((a) => {
       a.addEventListener("click", () => {
         nav.classList.remove("is-open");
         burger.classList.remove("is-open");
@@ -248,7 +295,7 @@
 
   function bindRouteButtons() {
     const buttonIds = ["btn-route", "btn-route-2", "btn-route-footer"];
-    buttonIds.forEach(id => {
+    buttonIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("click", (e) => {
@@ -280,7 +327,11 @@
       const response = await fetch(TELEGRAM_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" }),
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: "HTML",
+        }),
       });
       const result = await response.json();
       return result.ok;
