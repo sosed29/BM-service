@@ -4,8 +4,10 @@
   /** Координаты точки «БМ автоцентр» (Яндекс.Карты: ll=lon,lat) */
   const DEST_LAT = 45.072376;
   const DEST_LON = 39.021522;
+  const DEST_NAME = "БМ автоцентр";
   const MAPS_ORG_URL =
     "https://yandex.ru/maps/org/bm/131521270282/?ll=39.021522%2C45.072376&z=17";
+  const NAVI_ORG_URL = `https://yandex.ru/navi/org/bm/131521270282?si=2mqumcbrd1fjz9jayxmg73ykq8`;
 
   const IMG_FALLBACK = "img/placeholder.svg";
 
@@ -62,34 +64,44 @@
   }
 
   /**
-   * Функция построения маршрута
-   * Открывает Яндекс.Навигатор (если установлен) или Яндекс.Карты
+   * Функция построения маршрута в Яндекс.Навигатор
    */
-  function openYandexRouteFromPosition(lat, lon) {
-    const destLat = DEST_LAT;
-    const destLon = DEST_LON;
+  function openYandexNavigator() {
+    // Прямая ссылка на организацию в Яндекс.Навигаторе
+    // Формат: yandexnavi://build_route_on_map?lat_to=45.072376&lon_to=39.021522&name=БМ%20автоцентр
+    const encodedName = encodeURIComponent(DEST_NAME);
+    const yandexNaviUrl = `yandexnavi://build_route_on_map?lat_to=${DEST_LAT}&lon_to=${DEST_LON}&name=${encodedName}`;
 
-    // Вариант 1: Яндекс.Навигатор (открывает в приложении)
-    const yandexNaviUrl = `yandexnavi://build_route_on_map?lat_to=${destLat}&lon_to=${destLon}`;
+    // Fallback: если навигатор не открылся, открываем веб-версию
+    const webUrl = NAVI_ORG_URL;
 
-    // Вариант 2: Яндекс.Карты (fallback)
-    const yandexMapsUrl = `https://yandex.ru/maps/?rtext=${lat},${lon}~${destLat},${destLon}&rtt=auto`;
-
-    // Вариант 3: Прямая ссылка на организацию (если навигатор не открылся)
-    const orgUrl = MAPS_ORG_URL;
-
-    // Сначала пытаемся открыть в навигаторе
+    // Пытаемся открыть навигатор
     window.location.href = yandexNaviUrl;
 
-    // Если через 2 секунды ничего не произошло, открываем карты в браузере
+    // Если через 2 секунды не открылся, открываем в браузере
     setTimeout(() => {
-      window.open(yandexMapsUrl, "_blank", "noopener,noreferrer");
+      window.open(webUrl, "_blank", "noopener,noreferrer");
     }, 2000);
+  }
 
-    // Дополнительный fallback через 3 секунды если карты тоже не открылись
+  /**
+   * Функция построения маршрута с геолокацией
+   */
+  function openYandexNavigatorWithRoute(lat, lon) {
+    const encodedName = encodeURIComponent(DEST_NAME);
+    // Строим маршрут от текущей позиции до организации
+    const yandexNaviUrl = `yandexnavi://build_route_on_map?lat_from=${lat}&lon_from=${lon}&lat_to=${DEST_LAT}&lon_to=${DEST_LON}&name=${encodedName}`;
+
+    // Fallback: карты с маршрутом
+    const mapsUrl = `https://yandex.ru/maps/?rtext=${lat},${lon}~${DEST_LAT},${DEST_LON}&rtt=auto`;
+
+    // Пытаемся открыть навигатор
+    window.location.href = yandexNaviUrl;
+
+    // Если через 2 секунды не открылся, открываем карты в браузере
     setTimeout(() => {
-      window.open(orgUrl, "_blank", "noopener,noreferrer");
-    }, 3500);
+      window.open(mapsUrl, "_blank", "noopener,noreferrer");
+    }, 2000);
   }
 
   function openMapsOrgFallback() {
@@ -126,8 +138,8 @@
 
   function buildRoute() {
     if (!navigator.geolocation) {
-      showToast("❌ Геолокация недоступна. Открываем карту сервиса.", true);
-      openMapsOrgFallback();
+      showToast("❌ Геолокация недоступна. Открываем навигатор.", true);
+      openYandexNavigator();
       return;
     }
 
@@ -138,13 +150,13 @@
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         console.log(`📍 Текущее местоположение: ${lat}, ${lon}`);
-        openYandexRouteFromPosition(lat, lon);
+        openYandexNavigatorWithRoute(lat, lon);
       },
       (error) => {
         let errorMessage = "";
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = "❌ Разрешите доступ к геолокации в настройках";
+            errorMessage = "❌ Разрешите доступ к геолокации";
             break;
           case error.POSITION_UNAVAILABLE:
             errorMessage = "❌ Не удалось определить местоположение";
@@ -157,8 +169,9 @@
             break;
         }
         showToast(errorMessage, true);
+        // Если не удалось определить местоположение, открываем навигатор без маршрута
         setTimeout(() => {
-          openMapsOrgFallback();
+          openYandexNavigator();
         }, 1500);
       },
       {
