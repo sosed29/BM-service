@@ -7,10 +7,20 @@
   const MAPS_ORG_URL =
     "https://yandex.ru/maps/org/bm/131521270282/?ll=39.021522%2C45.072376&z=17";
 
-  /** Фото каталога: img/service-1.jpg … service-22.jpg (порядок как в массиве services) */
   const IMG_FALLBACK = "img/placeholder.svg";
 
-  // --- МАССИВ УСЛУГ (22 карточки, соответствует реальному порядку фото) ---
+  /** Telegram Bot Configuration */
+  const TELEGRAM_BOT_TOKEN = "8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM";
+
+  // ⚠️⚠️⚠️ ВАЖНО: ЗАМЕНИТЕ 0 НА РЕАЛЬНЫЙ CHAT ID ПОЛУЧЕННЫЙ ИЗ ССЫЛКИ ⚠️⚠️⚠️
+  // 1. Откройте в браузере: https://api.telegram.org/bot8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM/getUpdates
+  // 2. Найдите "chat":{"id": и скопируйте число (например 123456789)
+  // 3. Вставьте это число вместо 0 в строке ниже
+  const TELEGRAM_CHAT_ID = 0; // <--- СЮДА ВСТАВЬТЕ CHAT ID (только число, без кавычек)
+
+  const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+  // --- МАССИВ УСЛУГ (22 карточки, соответствует service-1.jpg до service-22.jpg) ---
   const services = [
     // 1. service-1.jpg
     {
@@ -189,8 +199,7 @@
 
   function openYandexRouteFromPosition(lat, lon) {
     const rtext = `${lat},${lon}~${DEST_LAT},${DEST_LON}`;
-    const url = "https://yandex.ru/maps/?rtext=" + encodeURIComponent(rtext);
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open("https://yandex.ru/maps/?rtext=" + encodeURIComponent(rtext), "_blank", "noopener,noreferrer");
   }
 
   function openMapsOrgFallback() {
@@ -204,32 +213,56 @@
     if (!toast) return;
     toast.textContent = message;
     toast.hidden = false;
-    requestAnimationFrame(() => {
-      toast.classList.add("is-visible");
-    });
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
     if (toastTimeout) clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
       toast.classList.remove("is-visible");
-      setTimeout(() => {
-        toast.hidden = true;
-      }, 400);
+      setTimeout(() => { toast.hidden = true; }, 400);
     }, 4500);
+  }
+
+  async function sendTelegramNotification(bookingData) {
+    const message = `
+📢 <b>НОВАЯ ЗАЯВКА НА ЗАПИСЬ!</b>
+━━━━━━━━━━━━━━━━━━━━━
+👤 <b>Имя:</b> ${escapeHtml(bookingData.name)}
+📞 <b>Телефон:</b> ${escapeHtml(bookingData.phone)}
+🚗 <b>Пожелания:</b> ${escapeHtml(bookingData.comment || "—")}
+━━━━━━━━━━━━━━━━━━━━━
+🕐 <b>Время:</b> ${new Date().toLocaleString("ru-RU")}
+📍 <b>Источник:</b> Сайт БМ Автоцентр
+    `;
+
+    try {
+      const response = await fetch(TELEGRAM_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" }),
+      });
+      const result = await response.json();
+      if (result.ok) {
+        console.log("✅ Уведомление отправлено в Telegram");
+        return true;
+      } else {
+        console.error("❌ Ошибка Telegram API:", result);
+        return false;
+      }
+    } catch (error) {
+      console.error("❌ Ошибка отправки в Telegram:", error);
+      return false;
+    }
   }
 
   function buildRoute() {
     if (!navigator.geolocation) {
-      showToast("Геолокация недоступна в браузере. Открываем карту сервиса.");
+      showToast("Геолокация недоступна. Открываем карту сервиса.");
       openMapsOrgFallback();
       return;
     }
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        openYandexRouteFromPosition(pos.coords.latitude, pos.coords.longitude);
-      },
+      (pos) => openYandexRouteFromPosition(pos.coords.latitude, pos.coords.longitude),
       () => {
-        showToast(
-          "Не удалось получить координаты. Открываем карту точки без маршрута."
-        );
+        showToast("Не удалось получить координаты. Открываем карту точки.");
         openMapsOrgFallback();
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
@@ -248,30 +281,18 @@
       if (filter !== "all" && item.category !== filter) return;
       const card = document.createElement("article");
       card.className = "service-card";
-      card.dataset.category = item.category;
-
       const imgSrc = catalogImagePath(index);
-
-      const priceHtml = `<p class="service-card__price${
-        item.price === "по запросу" ? " service-card__price--muted" : ""
-      }">${escapeHtml(item.price)}</p>`;
-
       card.innerHTML = `
         <div class="service-card__img">
-          <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(
-        item.title
-      )}" width="400" height="250" loading="lazy"${imgFallbackAttr()} />
+          <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(item.title)}" width="400" height="250" loading="lazy"${imgFallbackAttr()} />
         </div>
         <div class="service-card__body">
           <h3 class="service-card__title">${escapeHtml(item.title)}</h3>
-          ${priceHtml}
+          <p class="service-card__price${item.price === "по запросу" ? " service-card__price--muted" : ""}">${escapeHtml(item.price)}</p>
           <p class="service-card__desc">${escapeHtml(item.desc)}</p>
-          <p class="service-card__meta">${escapeHtml(
-            categoryLabels[item.category] || ""
-          )}</p>
+          <p class="service-card__meta">${escapeHtml(categoryLabels[item.category] || "")}</p>
         </div>
       `;
-
       grid.appendChild(card);
     });
   }
@@ -284,12 +305,10 @@
 
   function initFilters() {
     const chips = document.querySelectorAll(".filter-chip");
-    chips.forEach((chip) => {
+    chips.forEach(chip => {
       chip.addEventListener("click", () => {
         const filter = chip.getAttribute("data-filter") || "all";
-        chips.forEach((c) => {
-          c.classList.toggle("is-active", c === chip);
-        });
+        chips.forEach(c => c.classList.toggle("is-active", c === chip));
         renderCatalog(filter);
       });
     });
@@ -305,7 +324,7 @@
       burger.classList.toggle("is-open", !isOpen);
       burger.setAttribute("aria-expanded", !isOpen ? "true" : "false");
     });
-    nav.querySelectorAll("a").forEach((a) => {
+    nav.querySelectorAll("a").forEach(a => {
       a.addEventListener("click", () => {
         nav.classList.remove("is-open");
         burger.classList.remove("is-open");
@@ -315,8 +334,7 @@
   }
 
   function bindRouteButtons() {
-    const buttonIds = ["btn-route", "btn-route-2", "btn-route-footer"];
-    buttonIds.forEach((id) => {
+    ["btn-route", "btn-route-2", "btn-route-footer"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener("click", buildRoute);
     });
@@ -325,7 +343,7 @@
   function initBookingForm() {
     const form = document.getElementById("booking-form");
     if (!form) return;
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const fd = new FormData(form);
       const payload = {
@@ -333,17 +351,30 @@
         phone: String(fd.get("phone") || "").trim(),
         comment: String(fd.get("comment") || "").trim(),
       };
-
       if (!payload.name || !payload.phone) {
         showToast("Укажите имя и телефон.");
         return;
       }
-
-      if (typeof console !== "undefined" && console.log) {
+      const submitBtn = form.querySelector(".booking__submit");
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Отправка...";
+      submitBtn.disabled = true;
+      try {
+        const sent = await sendTelegramNotification(payload);
+        if (sent) {
+          showToast("✅ Заявка принята! Мы перезвоним на указанный номер.");
+        } else {
+          showToast("⚠️ Заявка принята. Мы свяжемся с вами в ближайшее время.");
+        }
         console.log("[БМ запись]", payload);
+        form.reset();
+      } catch (error) {
+        console.error("Ошибка:", error);
+        showToast("Произошла ошибка. Попробуйте позвонить по телефону.");
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
       }
-      showToast("Заявка принята. Мы перезвоним на указанный номер.");
-      form.reset();
     });
   }
 
