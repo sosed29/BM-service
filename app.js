@@ -16,7 +16,7 @@
   // 1. Откройте в браузере: https://api.telegram.org/bot8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM/getUpdates
   // 2. Найдите "chat":{"id": и скопируйте число (например 123456789)
   // 3. Вставьте это число вместо 0 в строке ниже
-  const TELEGRAM_CHAT_ID = 0; // <--- СЮДА ВСТАВЬТЕ CHAT ID (только число, без кавычек)
+  const TELEGRAM_CHAT_ID = 0; // <--- СЮДА ВСТАВЬТЕ CHAT ID
 
   const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
@@ -197,75 +197,111 @@
     return "img/service-" + (1 + indexInCatalog) + ".jpg";
   }
 
+  /**
+   * Функция построения маршрута в Яндекс.Картах
+   * @param {number} lat - широта текущего местоположения
+   * @param {number} lon - долгота текущего местоположения
+   */
   function openYandexRouteFromPosition(lat, lon) {
-    const rtext = `${lat},${lon}~${DEST_LAT},${DEST_LON}`;
-    window.open("https://yandex.ru/maps/?rtext=" + encodeURIComponent(rtext), "_blank", "noopener,noreferrer");
+    // Формируем параметры маршрута: точка А (текущая) ~ точка Б (автосервис)
+    const startPoint = `${lat},${lon}`;
+    const endPoint = `${DEST_LAT},${DEST_LON}`;
+    const rtext = `${startPoint}~${endPoint}`;
+
+    // Открываем Яндекс.Карты с построенным маршрутом
+    const url = `https://yandex.ru/maps/?rtext=${encodeURIComponent(rtext)}&rtt=auto`;
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
+  /**
+   * Открытие карты сервиса (без маршрута, если геолокация недоступна)
+   */
   function openMapsOrgFallback() {
     window.open(MAPS_ORG_URL, "_blank", "noopener,noreferrer");
   }
 
   let toastTimeout = null;
 
-  function showToast(message) {
+  function showToast(message, isError = false) {
     const toast = document.getElementById("toast");
     if (!toast) return;
     toast.textContent = message;
     toast.hidden = false;
+
+    // Стилизуем сообщение об ошибке
+    if (isError) {
+      toast.style.background = "rgba(227, 6, 19, 0.9)";
+      toast.style.borderColor = "#ff1a28";
+    } else {
+      toast.style.background = "var(--surface)";
+      toast.style.borderColor = "var(--border)";
+    }
+
     requestAnimationFrame(() => toast.classList.add("is-visible"));
     if (toastTimeout) clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {
       toast.classList.remove("is-visible");
-      setTimeout(() => { toast.hidden = true; }, 400);
+      setTimeout(() => {
+        toast.hidden = true;
+        // Сбрасываем стили
+        toast.style.background = "";
+        toast.style.borderColor = "";
+      }, 400);
     }, 4500);
   }
 
-  async function sendTelegramNotification(bookingData) {
-    const message = `
-📢 <b>НОВАЯ ЗАЯВКА НА ЗАПИСЬ!</b>
-━━━━━━━━━━━━━━━━━━━━━
-👤 <b>Имя:</b> ${escapeHtml(bookingData.name)}
-📞 <b>Телефон:</b> ${escapeHtml(bookingData.phone)}
-🚗 <b>Пожелания:</b> ${escapeHtml(bookingData.comment || "—")}
-━━━━━━━━━━━━━━━━━━━━━
-🕐 <b>Время:</b> ${new Date().toLocaleString("ru-RU")}
-📍 <b>Источник:</b> Сайт БМ Автоцентр
-    `;
-
-    try {
-      const response = await fetch(TELEGRAM_API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" }),
-      });
-      const result = await response.json();
-      if (result.ok) {
-        console.log("✅ Уведомление отправлено в Telegram");
-        return true;
-      } else {
-        console.error("❌ Ошибка Telegram API:", result);
-        return false;
-      }
-    } catch (error) {
-      console.error("❌ Ошибка отправки в Telegram:", error);
-      return false;
-    }
-  }
-
+  /**
+   * Основная функция построения маршрута
+   * Определяет геолокацию пользователя и строит маршрут до автосервиса
+   */
   function buildRoute() {
+    // Проверяем поддержку геолокации браузером
     if (!navigator.geolocation) {
-      showToast("Геолокация недоступна. Открываем карту сервиса.");
+      showToast("❌ Геолокация недоступна в вашем браузере. Открываем карту сервиса.", true);
       openMapsOrgFallback();
       return;
     }
+
+    // Показываем индикатор загрузки
+    showToast("📍 Определяем ваше местоположение...");
+
+    // Запрашиваем текущее местоположение
     navigator.geolocation.getCurrentPosition(
-      (pos) => openYandexRouteFromPosition(pos.coords.latitude, pos.coords.longitude),
-      () => {
-        showToast("Не удалось получить координаты. Открываем карту точки.");
-        openMapsOrgFallback();
+      // Успешное получение координат
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        console.log(`📍 Текущее местоположение: ${lat}, ${lon}`);
+        openYandexRouteFromPosition(lat, lon);
       },
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
+      // Ошибка получения координат
+      (error) => {
+        let errorMessage = "";
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "❌ Доступ к геолокации запрещен. Разрешите доступ в настройках браузера.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "❌ Не удалось определить местоположение. Проверьте сигнал GPS.";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "❌ Превышено время ожидания геолокации. Попробуйте еще раз.";
+            break;
+          default:
+            errorMessage = "❌ Не удалось определить местоположение.";
+            break;
+        }
+        showToast(errorMessage, true);
+        // Открываем карту сервиса без маршрута
+        setTimeout(() => {
+          openMapsOrgFallback();
+        }, 1500);
+      },
+      {
+        enableHighAccuracy: true,  // Использовать высокую точность (GPS)
+        timeout: 15000,            // Таймаут 15 секунд
+        maximumAge: 30000          // Кэшировать позицию на 30 секунд
+      }
     );
   }
 
@@ -334,10 +370,55 @@
   }
 
   function bindRouteButtons() {
-    ["btn-route", "btn-route-2", "btn-route-footer"].forEach(id => {
+    // Кнопки, которые должны строить маршрут
+    const buttonIds = ["btn-route", "btn-route-2", "btn-route-footer"];
+    buttonIds.forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener("click", buildRoute);
+      if (el) {
+        el.addEventListener("click", (e) => {
+          e.preventDefault();
+          buildRoute();
+        });
+      }
     });
+  }
+
+  async function sendTelegramNotification(bookingData) {
+    // Проверяем, что Chat ID установлен
+    if (TELEGRAM_CHAT_ID === 0) {
+      console.warn("⚠️ Telegram Chat ID не настроен. Уведомления не отправляются.");
+      return false;
+    }
+
+    const message = `
+📢 <b>НОВАЯ ЗАЯВКА НА ЗАПИСЬ!</b>
+━━━━━━━━━━━━━━━━━━━━━
+👤 <b>Имя:</b> ${escapeHtml(bookingData.name)}
+📞 <b>Телефон:</b> ${escapeHtml(bookingData.phone)}
+🚗 <b>Пожелания:</b> ${escapeHtml(bookingData.comment || "—")}
+━━━━━━━━━━━━━━━━━━━━━
+🕐 <b>Время:</b> ${new Date().toLocaleString("ru-RU")}
+📍 <b>Источник:</b> Сайт БМ Автоцентр
+    `;
+
+    try {
+      const response = await fetch(TELEGRAM_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" }),
+      });
+      const result = await response.json();
+      if (result.ok) {
+        console.log("✅ Уведомление отправлено в Telegram");
+        return true;
+      } else {
+        console.error("❌ Ошибка Telegram API:", result);
+        return false;
+      }
+    } catch (error) {
+      console.error("❌ Ошибка отправки в Telegram:", error);
+      return false;
+    }
   }
 
   function initBookingForm() {
@@ -352,7 +433,7 @@
         comment: String(fd.get("comment") || "").trim(),
       };
       if (!payload.name || !payload.phone) {
-        showToast("Укажите имя и телефон.");
+        showToast("❌ Укажите имя и телефон.");
         return;
       }
       const submitBtn = form.querySelector(".booking__submit");
@@ -370,7 +451,7 @@
         form.reset();
       } catch (error) {
         console.error("Ошибка:", error);
-        showToast("Произошла ошибка. Попробуйте позвонить по телефону.");
+        showToast("❌ Произошла ошибка. Попробуйте позвонить по телефону.", true);
       } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
