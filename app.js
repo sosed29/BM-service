@@ -12,173 +12,37 @@
   /** Telegram Bot Configuration */
   const TELEGRAM_BOT_TOKEN = "8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM";
 
-  // ⚠️⚠️⚠️ ВАЖНО: ЗАМЕНИТЕ 0 НА РЕАЛЬНЫЙ CHAT ID ПОЛУЧЕННЫЙ ИЗ ССЫЛКИ ⚠️⚠️⚠️
-  // 1. Откройте в браузере: https://api.telegram.org/bot8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM/getUpdates
-  // 2. Найдите "chat":{"id": и скопируйте число (например 123456789)
-  // 3. Вставьте это число вместо 0 в строке ниже
-  const TELEGRAM_CHAT_ID = 0; // <--- СЮДА ВСТАВЬТЕ CHAT ID
+  // ⚠️⚠️⚠️ ВАЖНО: ЗАМЕНИТЕ 0 НА РЕАЛЬНЫЙ CHAT ID ⚠️⚠️⚠️
+  const TELEGRAM_CHAT_ID = 0; // <--- СЮДА ВСТАВЬТЕ CHAT ID ПОСЛЕ ТОГО КАК СОТРУДНИК НАЖМЕТ СТАРТ
 
   const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
-  // --- МАССИВ УСЛУГ (22 карточки, соответствует service-1.jpg до service-22.jpg) ---
+  // --- МАССИВ УСЛУГ (22 карточки) ---
   const services = [
-    // 1. service-1.jpg
-    {
-      title: "Эндоскопия",
-      price: "2 000 ₽",
-      desc: "Производим эндоскопию бензинового ДВС.",
-      category: "engine",
-    },
-    // 2. service-2.jpg
-    {
-      title: "Замена свечей (за 4 шт.)",
-      price: "от 1 000 ₽",
-      desc: "Комплексная замена комплекта свечей зажигания.",
-      category: "engine",
-    },
-    // 3. service-3.jpg
-    {
-      title: "Ремонт (переборка) тормозных суппортов",
-      price: "2 000 ₽",
-      desc: "Реставрация тормозных суппортов.",
-      category: "brakes",
-    },
-    // 4. service-4.jpg
-    {
-      title: "Замена сайлентблоков задней балки",
-      price: "7 000 ₽",
-      desc: "Замена сайлентблоков задней балки легковых автомобилей.",
-      category: "suspension",
-    },
-    // 5. service-5.jpg
-    {
-      title: "Замена рулевой рейки",
-      price: "5 000 ₽",
-      desc: "Замена рулевой рейки (съём-установка).",
-      category: "steering",
-    },
-    // 6. service-6.jpg
-    {
-      title: "Замена ремней и цепей ГРМ",
-      price: "5 000 ₽",
-      desc: "Замена цепей и ремней ГРМ.",
-      category: "engine",
-    },
-    // 7. service-7.jpg
-    {
-      title: "Замена радиатора печки со снятием торпедо",
-      price: "10 000 ₽",
-      desc: "Производим замену радиатора печки как со снятием торпедо, так и без. Многолетний опыт, гарантия.",
-      category: "climate",
-    },
-    // 8. service-8.jpg
-    {
-      title: "Замена генератора",
-      price: "2 500 ₽",
-      desc: "Производим снятие-установку генераторов и стартеров любой сложности.",
-      category: "electric",
-    },
-    // 9. service-9.jpg
-    {
-      title: "Замена ступичного подшипника",
-      price: "2 000 ₽",
-      desc: "Замена ступиц, подшипников на профессиональном оборудовании путем перепрессовки.",
-      category: "suspension",
-    },
-    // 10. service-10.jpg
-    {
-      title: "Ремонт стартеров и генераторов",
-      price: "5 000 ₽",
-      desc: "Производим ремонт, дефектовку таких агрегатов как стартер и генератор. Гарантия на работы.",
-      category: "electric",
-    },
-    // 11. service-11.jpg
-    {
-      title: "Ремонт рулевой рейки",
-      price: "5 000 ₽",
-      desc: "Грамотно производим ремонт рулевых реек, в том числе отечественных автомобилей. Гарантия.",
-      category: "steering",
-    },
-    // 12. service-12.jpg
-    {
-      title: "Ремонт МКПП",
-      price: "7 000 ₽",
-      desc: "Производим грамотный ремонт механических коробок переключения передач, а так же обслуживание, замену масла.",
-      category: "transmission",
-    },
-    // 13. service-13.jpg
-    {
-      title: "Замена сцепления МКПП",
-      price: "5 000 ₽",
-      desc: "Производим замену сцепления механических кпп. Стоимость услуги зависит от марки автомобиля.",
-      category: "transmission",
-    },
-    // 14. service-14.jpg
-    {
-      title: "Аппаратная замена антифриза + промывка системы охлаждения",
-      price: "2 500 ₽",
-      desc: "Оказываем услуги по аппаратной замене антифриза, а также делаем промывку системы охлаждения в два этапа с применением химии.",
-      category: "cooling",
-    },
-    // 15. service-15.jpg
-    {
-      title: "Замена тормозных колодок, дисков и барабанов",
-      price: "1 000 ₽",
-      desc: "Делаем замену колодок, тормозных дисков и барабанов. Также производим полный спектр обслуживания тормозной системы, в том числе с электроручником.",
-      category: "brakes",
-    },
-    // 16. service-16.jpg
-    {
-      title: "Замена масла в АКПП",
-      price: "2 000 ₽",
-      desc: "Производим частичную замену масла в акпп, вариатора, ркпп и т. д. Замена фильтра со снятием поддона, замену фильтра с разбором акпп.",
-      category: "transmission",
-    },
-    // 17. service-17.jpg
-    {
-      title: "Мойка радиаторов",
-      price: "2 000 ₽",
-      desc: "Производим мойку радиаторов автомобиля, так как забитые радиаторы приводят к перегреву системы охлаждения, а также плохой работе кондиционера.",
-      category: "cooling",
-    },
-    // 18. service-18.jpg
-    {
-      title: "Заправка фреоном автокондиционеров",
-      price: "500 ₽",
-      desc: "Производим АППАРАТНУЮ заправку автокондиционеров, а также ремонт, обслуживание.",
-      category: "ac",
-    },
-    // 19. service-19.jpg
-    {
-      title: "Регулировка Сход - развал",
-      price: "1 500 ₽",
-      desc: "Регулировка углов установки колёс производится на своевременно обслуженном и откалиброванном оборудование. Раз год обновляется база автомобилей.",
-      category: "wheel",
-    },
-    // 20. service-20.jpg
-    {
-      title: "Ремонт ГБЦ",
-      price: "10 000 ₽",
-      desc: "Производим ремонт двигателей, ГБЦ, а также снятие-установку агрегатов.",
-      category: "engine",
-    },
-    // 21. service-21.jpg
-    {
-      title: "Замена масла в двигателе",
-      price: "1 000 ₽",
-      desc: "Замена моторного масла и фильтра.",
-      category: "engine",
-    },
-    // 22. service-22.jpg
-    {
-      title: "Другое",
-      price: "по запросу",
-      desc: "Иные виды работ — уточняйте по телефону, подберём решение под ваш случай.",
-      category: "other",
-    },
+    { title: "Эндоскопия", price: "2 000 ₽", desc: "Производим эндоскопию бензинового ДВС.", category: "engine" },
+    { title: "Замена свечей (за 4 шт.)", price: "от 1 000 ₽", desc: "Комплексная замена комплекта свечей зажигания.", category: "engine" },
+    { title: "Ремонт (переборка) тормозных суппортов", price: "2 000 ₽", desc: "Реставрация тормозных суппортов.", category: "brakes" },
+    { title: "Замена сайлентблоков задней балки", price: "7 000 ₽", desc: "Замена сайлентблоков задней балки легковых автомобилей.", category: "suspension" },
+    { title: "Замена рулевой рейки", price: "5 000 ₽", desc: "Замена рулевой рейки (съём-установка).", category: "steering" },
+    { title: "Замена ремней и цепей ГРМ", price: "5 000 ₽", desc: "Замена цепей и ремней ГРМ.", category: "engine" },
+    { title: "Замена радиатора печки со снятием торпедо", price: "10 000 ₽", desc: "Производим замену радиатора печки как со снятием торпедо, так и без. Многолетний опыт, гарантия.", category: "climate" },
+    { title: "Замена генератора", price: "2 500 ₽", desc: "Производим снятие-установку генераторов и стартеров любой сложности.", category: "electric" },
+    { title: "Замена ступичного подшипника", price: "2 000 ₽", desc: "Замена ступиц, подшипников на профессиональном оборудовании путем перепрессовки.", category: "suspension" },
+    { title: "Ремонт стартеров и генераторов", price: "5 000 ₽", desc: "Производим ремонт, дефектовку таких агрегатов как стартер и генератор. Гарантия на работы.", category: "electric" },
+    { title: "Ремонт рулевой рейки", price: "5 000 ₽", desc: "Грамотно производим ремонт рулевых реек, в том числе отечественных автомобилей. Гарантия.", category: "steering" },
+    { title: "Ремонт МКПП", price: "7 000 ₽", desc: "Производим грамотный ремонт механических коробок переключения передач, а так же обслуживание, замену масла.", category: "transmission" },
+    { title: "Замена сцепления МКПП", price: "5 000 ₽", desc: "Производим замену сцепления механических кпп. Стоимость услуги зависит от марки автомобиля.", category: "transmission" },
+    { title: "Аппаратная замена антифриза + промывка системы охлаждения", price: "2 500 ₽", desc: "Оказываем услуги по аппаратной замене антифриза, а также делаем промывку системы охлаждения в два этапа с применением химии.", category: "cooling" },
+    { title: "Замена тормозных колодок, дисков и барабанов", price: "1 000 ₽", desc: "Делаем замену колодок, тормозных дисков и барабанов. Также производим полный спектр обслуживания тормозной системы, в том числе с электроручником.", category: "brakes" },
+    { title: "Замена масла в АКПП", price: "2 000 ₽", desc: "Производим частичную замену масла в акпп, вариатора, ркпп и т. д. Замена фильтра со снятием поддона, замену фильтра с разбором акпп.", category: "transmission" },
+    { title: "Мойка радиаторов", price: "2 000 ₽", desc: "Производим мойку радиаторов автомобиля, так как забитые радиаторы приводят к перегреву системы охлаждения, а также плохой работе кондиционера.", category: "cooling" },
+    { title: "Заправка фреоном автокондиционеров", price: "500 ₽", desc: "Производим АППАРАТНУЮ заправку автокондиционеров, а также ремонт, обслуживание.", category: "ac" },
+    { title: "Регулировка Сход - развал", price: "1 500 ₽", desc: "Регулировка углов установки колёс производится на своевременно обслуженном и откалиброванном оборудование. Раз год обновляется база автомобилей.", category: "wheel" },
+    { title: "Ремонт ГБЦ", price: "10 000 ₽", desc: "Производим ремонт двигателей, ГБЦ, а также снятие-установку агрегатов.", category: "engine" },
+    { title: "Замена масла в двигателе", price: "1 000 ₽", desc: "Замена моторного масла и фильтра.", category: "engine" },
+    { title: "Другое", price: "по запросу", desc: "Иные виды работ — уточняйте по телефону, подберём решение под ваш случай.", category: "other" },
   ];
 
-  // --- КАТЕГОРИИ ДЛЯ ФИЛЬТРОВ ---
   const categoryLabels = {
     engine: "Двигатель",
     brakes: "Тормозная система",
@@ -198,24 +62,36 @@
   }
 
   /**
-   * Функция построения маршрута в Яндекс.Картах
-   * @param {number} lat - широта текущего местоположения
-   * @param {number} lon - долгота текущего местоположения
+   * Функция построения маршрута
+   * Открывает Яндекс.Навигатор (если установлен) или Яндекс.Карты
    */
   function openYandexRouteFromPosition(lat, lon) {
-    // Формируем параметры маршрута: точка А (текущая) ~ точка Б (автосервис)
-    const startPoint = `${lat},${lon}`;
-    const endPoint = `${DEST_LAT},${DEST_LON}`;
-    const rtext = `${startPoint}~${endPoint}`;
+    const destLat = DEST_LAT;
+    const destLon = DEST_LON;
 
-    // Открываем Яндекс.Карты с построенным маршрутом
-    const url = `https://yandex.ru/maps/?rtext=${encodeURIComponent(rtext)}&rtt=auto`;
-    window.open(url, "_blank", "noopener,noreferrer");
+    // Вариант 1: Яндекс.Навигатор (открывает в приложении)
+    const yandexNaviUrl = `yandexnavi://build_route_on_map?lat_to=${destLat}&lon_to=${destLon}`;
+
+    // Вариант 2: Яндекс.Карты (fallback)
+    const yandexMapsUrl = `https://yandex.ru/maps/?rtext=${lat},${lon}~${destLat},${destLon}&rtt=auto`;
+
+    // Вариант 3: Прямая ссылка на организацию (если навигатор не открылся)
+    const orgUrl = MAPS_ORG_URL;
+
+    // Сначала пытаемся открыть в навигаторе
+    window.location.href = yandexNaviUrl;
+
+    // Если через 2 секунды ничего не произошло, открываем карты в браузере
+    setTimeout(() => {
+      window.open(yandexMapsUrl, "_blank", "noopener,noreferrer");
+    }, 2000);
+
+    // Дополнительный fallback через 3 секунды если карты тоже не открылись
+    setTimeout(() => {
+      window.open(orgUrl, "_blank", "noopener,noreferrer");
+    }, 3500);
   }
 
-  /**
-   * Открытие карты сервиса (без маршрута, если геолокация недоступна)
-   */
   function openMapsOrgFallback() {
     window.open(MAPS_ORG_URL, "_blank", "noopener,noreferrer");
   }
@@ -228,7 +104,6 @@
     toast.textContent = message;
     toast.hidden = false;
 
-    // Стилизуем сообщение об ошибке
     if (isError) {
       toast.style.background = "rgba(227, 6, 19, 0.9)";
       toast.style.borderColor = "#ff1a28";
@@ -243,64 +118,53 @@
       toast.classList.remove("is-visible");
       setTimeout(() => {
         toast.hidden = true;
-        // Сбрасываем стили
         toast.style.background = "";
         toast.style.borderColor = "";
       }, 400);
     }, 4500);
   }
 
-  /**
-   * Основная функция построения маршрута
-   * Определяет геолокацию пользователя и строит маршрут до автосервиса
-   */
   function buildRoute() {
-    // Проверяем поддержку геолокации браузером
     if (!navigator.geolocation) {
-      showToast("❌ Геолокация недоступна в вашем браузере. Открываем карту сервиса.", true);
+      showToast("❌ Геолокация недоступна. Открываем карту сервиса.", true);
       openMapsOrgFallback();
       return;
     }
 
-    // Показываем индикатор загрузки
     showToast("📍 Определяем ваше местоположение...");
 
-    // Запрашиваем текущее местоположение
     navigator.geolocation.getCurrentPosition(
-      // Успешное получение координат
       (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         console.log(`📍 Текущее местоположение: ${lat}, ${lon}`);
         openYandexRouteFromPosition(lat, lon);
       },
-      // Ошибка получения координат
       (error) => {
         let errorMessage = "";
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = "❌ Доступ к геолокации запрещен. Разрешите доступ в настройках браузера.";
+            errorMessage = "❌ Разрешите доступ к геолокации в настройках";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = "❌ Не удалось определить местоположение. Проверьте сигнал GPS.";
+            errorMessage = "❌ Не удалось определить местоположение";
             break;
           case error.TIMEOUT:
-            errorMessage = "❌ Превышено время ожидания геолокации. Попробуйте еще раз.";
+            errorMessage = "❌ Превышено время ожидания";
             break;
           default:
-            errorMessage = "❌ Не удалось определить местоположение.";
+            errorMessage = "❌ Ошибка определения местоположения";
             break;
         }
         showToast(errorMessage, true);
-        // Открываем карту сервиса без маршрута
         setTimeout(() => {
           openMapsOrgFallback();
         }, 1500);
       },
       {
-        enableHighAccuracy: true,  // Использовать высокую точность (GPS)
-        timeout: 15000,            // Таймаут 15 секунд
-        maximumAge: 30000          // Кэшировать позицию на 30 секунд
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 30000
       }
     );
   }
@@ -370,7 +234,6 @@
   }
 
   function bindRouteButtons() {
-    // Кнопки, которые должны строить маршрут
     const buttonIds = ["btn-route", "btn-route-2", "btn-route-footer"];
     buttonIds.forEach(id => {
       const el = document.getElementById(id);
@@ -384,9 +247,8 @@
   }
 
   async function sendTelegramNotification(bookingData) {
-    // Проверяем, что Chat ID установлен
     if (TELEGRAM_CHAT_ID === 0) {
-      console.warn("⚠️ Telegram Chat ID не настроен. Уведомления не отправляются.");
+      console.warn("⚠️ Telegram Chat ID не настроен");
       return false;
     }
 
@@ -408,15 +270,9 @@
         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: "HTML" }),
       });
       const result = await response.json();
-      if (result.ok) {
-        console.log("✅ Уведомление отправлено в Telegram");
-        return true;
-      } else {
-        console.error("❌ Ошибка Telegram API:", result);
-        return false;
-      }
+      return result.ok;
     } catch (error) {
-      console.error("❌ Ошибка отправки в Telegram:", error);
+      console.error("Ошибка отправки в Telegram:", error);
       return false;
     }
   }
@@ -433,7 +289,7 @@
         comment: String(fd.get("comment") || "").trim(),
       };
       if (!payload.name || !payload.phone) {
-        showToast("❌ Укажите имя и телефон.");
+        showToast("❌ Укажите имя и телефон.", true);
         return;
       }
       const submitBtn = form.querySelector(".booking__submit");
@@ -443,15 +299,13 @@
       try {
         const sent = await sendTelegramNotification(payload);
         if (sent) {
-          showToast("✅ Заявка принята! Мы перезвоним на указанный номер.");
+          showToast("✅ Заявка принята! Мы перезвоним.");
         } else {
-          showToast("⚠️ Заявка принята. Мы свяжемся с вами в ближайшее время.");
+          showToast("⚠️ Заявка принята. Мы свяжемся с вами.");
         }
-        console.log("[БМ запись]", payload);
         form.reset();
       } catch (error) {
-        console.error("Ошибка:", error);
-        showToast("❌ Произошла ошибка. Попробуйте позвонить по телефону.", true);
+        showToast("❌ Ошибка. Попробуйте позвонить.", true);
       } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
