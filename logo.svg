@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 72" fill="none" aria-hidden="true">
+  <!-- >3>B8?  + ?0;>G:8 + "&"  (20@80=B 4;O D028:>=:8 / ?5G0B8) -->
+  <rect width="200" height="72" rx="4" fill="#1a1a1f"/>
+  <rect x="12" y="14" width="5" height="28" rx="1" fill="#fff"/>
+  <text x="24" y="38" font-family="system-ui,Segoe UI,sans-serif" font-size="28" font-weight="800" fill="#e30613"></text>
+  <rect x="68" y="14" width="5" height="28" rx="1" fill="#fff"/>
+  <text x="12" y="62" font-family="system-ui,Segoe UI,sans-serif" font-size="18" font-weight="800" fill="#e30613" letter-spacing="0.08em">"&" </text>
+</svg>

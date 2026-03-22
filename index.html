@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="БМ автоцентр — официальный автосервис в Краснодаре. 20 лет на рынке. Развал-схождение, ремонт, диагностика, дизель." />
+  <title>БМ автоцентр — официальный автосервис</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header" id="top">
+    <div class="header__inner container">
+      <a class="logo logo--brand logo--header" href="#top" aria-label="БМ автоцентр на главную">
+        <span class="logo__sign">
+          <span class="logo__bar" aria-hidden="true"></span>
+          <span class="logo__bm">БМ</span>
+          <span class="logo__bar" aria-hidden="true"></span>
+        </span>
+        <span class="logo__full">АВТОЦЕНТР</span>
+      </a>
+      <nav class="nav" id="nav" aria-label="Основное меню">
+        <a href="#about">О нас</a>
+        <a href="#booking">Запись</a>
+        <a href="#catalog">Каталог</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <a class="header__phone" href="tel:+79002536444">+7 (900) 253-64-44</a>
+      <button type="button" class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav"></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="hero__content container">
+        <p class="hero__eyebrow">Официальный автосервис</p>
+        <h1 class="hero__title">
+          <span class="logo logo--brand logo--hero">
+            <span class="logo__sign">
+              <span class="logo__bar" aria-hidden="true"></span>
+              <span class="logo__bm">БМ</span>
+              <span class="logo__bar" aria-hidden="true"></span>
+            </span>
+            <span class="logo__full">АВТОЦЕНТР</span>
+          </span>
+        </h1>
+        <p class="hero__lead">Более <strong>20 лет</strong> на рынке автосервиса. Современное оборудование, опытные мастера и честные цены — ваш автомобиль в надёжных руках.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#booking">Онлайн-запись</a>
+          <a class="btn btn--ghost" href="tel:+79002536444">Позвонить</a>
+          <button type="button" class="btn btn--ghost" id="btn-route">Маршрут</button>
+        </div>
+      </div>
+    </section>
+
+<section class="section about" id="about">
+  <div class="container about__grid">
+    <div class="about__text">
+      <h2 class="section__title section__title--left">Надёжный партнёр для вашего авто</h2>
+      <p>«БМ автоцентр» — это команда инженеров и механиков, для которых важен каждый автомобиль. Мы не просто устраняем неисправности: подбираем оптимальное решение по срокам и бюджету, консультируем до и после ремонта.</p>
+      <p>Диагностика на профессиональном оборудовании, ремонт ходовой, двигателя, коробок передач, тормозной системы и электрики — полный спектр услуг для легковых автомобилей, в том числе иномарок.</p>
+      <ul class="about__list">
+        <li>Прозрачные цены и согласование работ</li>
+        <li>Собственная зона ожидания и парковка</li>
+        <li>Запись по телефону в удобное время</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+    <section class="section booking" id="booking">
+      <div class="container">
+        <h2 class="section__title">Запись на сервис</h2>
+        <p class="section__subtitle">Оставьте заявку — перезвоним и согласуем удобное время.</p>
+        <form class="booking__form" id="booking-form" novalidate>
+          <div class="booking__grid">
+            <label class="booking__field">
+              <span class="booking__label">Имя *</span>
+              <input class="booking__input" type="text" name="name" required autocomplete="name" placeholder="Как к вам обращаться" />
+            </label>
+            <label class="booking__field">
+              <span class="booking__label">Телефон *</span>
+              <input class="booking__input" type="tel" name="phone" required autocomplete="tel" placeholder="+7 (900) 000-00-00" />
+            </label>
+            <label class="booking__field booking__field--full">
+              <span class="booking__label">Автомобиль и пожелания</span>
+              <textarea class="booking__textarea" name="comment" rows="4" placeholder="Марка, модель, желаемая услуга или комментарий"></textarea>
+            </label>
+          </div>
+          <p class="booking__hint">Отправляя форму, вы соглашаетесь на обратный звонок.</p>
+          <button type="submit" class="btn btn--primary booking__submit">Отправить заявку</button>
+        </form>
+      </div>
+    </section>
+
+<section class="section catalog" id="catalog">
+  <div class="container">
+    <h2 class="section__title">Каталог услуг</h2>
+    <p class="section__subtitle">Выберите категорию или смотрите все услуги</p>
+    <div class="catalog__filters" role="tablist" aria-label="Фильтр каталога">
+      <button type="button" class="filter-chip is-active" data-filter="all">Все</button>
+      <button type="button" class="filter-chip" data-filter="engine">Двигатель</button>
+      <button type="button" class="filter-chip" data-filter="brakes">Тормозная система</button>
+      <button type="button" class="filter-chip" data-filter="suspension">Подвеска</button>
+      <button type="button" class="filter-chip" data-filter="steering">Рулевое управление</button>
+      <button type="button" class="filter-chip" data-filter="transmission">Трансмиссия</button>
+      <button type="button" class="filter-chip" data-filter="electric">Электрика</button>
+      <button type="button" class="filter-chip" data-filter="climate">Климат (печка)</button>
+      <button type="button" class="filter-chip" data-filter="ac">Кондиционер</button>
+      <button type="button" class="filter-chip" data-filter="cooling">Система охлаждения</button>
+      <button type="button" class="filter-chip" data-filter="wheel">Сход-развал</button>
+      <button type="button" class="filter-chip" data-filter="other">Другое</button>
+    </div>
+    <div class="catalog__grid" id="catalog-grid"></div>
+  </div>
+</section>
+
+    <section class="section cta">
+      <div class="container cta__inner">
+        <div>
+          <h2 class="cta__title">Запишитесь на сервис</h2>
+          <p class="cta__text">Позвоните или постройте маршрут до нас в один клик.</p>
+        </div>
+        <div class="cta__buttons">
+          <a class="btn btn--primary" href="tel:+79002536444">+7 (900) 253-64-44</a>
+          <button type="button" class="btn btn--outline" id="btn-route-2">Открыть маршрут в Яндекс.Картах</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="container footer__grid">
+      <div>
+        <div class="footer__brand logo logo--brand logo--footer">
+          <span class="logo__sign">
+            <span class="logo__bar" aria-hidden="true"></span>
+            <span class="logo__bm">БМ</span>
+            <span class="logo__bar" aria-hidden="true"></span>
+          </span>
+          <span class="logo__full">АВТОЦЕНТР</span>
+        </div>
+        <p class="footer__tagline">Официальный автосервис. 20 лет на рынке.</p>
+      </div>
+      <div>
+        <h3 class="footer__heading">Адрес</h3>
+        <p class="footer__address">ул. 1 Мая, 332/1</p>
+        <button type="button" class="link-button" id="btn-route-footer">Построить маршрут</button>
+      </div>
+      <div>
+        <h3 class="footer__heading">Контакты</h3>
+        <a class="footer__phone" href="tel:+79002536444">+7 (900) 253-64-44</a>
+        <p class="footer__hours">Режим работы уточняйте по телефону</p>
+      </div>
+    </div>
+    <div class="footer__bottom container">
+      <p>© <span id="year"></span> БМ автоцентр. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
