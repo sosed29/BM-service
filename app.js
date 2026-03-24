@@ -19,7 +19,7 @@
   const TELEGRAM_BOT_TOKEN = "8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM";
 
   // ⚠️⚠️⚠️ ВАЖНО: ЗАМЕНИТЕ 0 НА РЕАЛЬНЫЙ CHAT ID ⚠️⚠️⚠️
-  const TELEGRAM_CHAT_ID = 0; // <--- СЮДА ВСТАВЬТЕ CHAT ID ПОСЛЕ ТОГО КАК СОТРУДНИК НАЖМЕТ СТАРТ
+  const TELEGRAM_CHAT_ID = 8445331017; // <--- СЮДА ВСТАВЬТЕ CHAT ID ПОСЛЕ ТОГО КАК СОТРУДНИК НАЖМЕТ СТАРТ
 
   const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
