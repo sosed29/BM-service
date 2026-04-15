@@ -287,13 +287,136 @@ button {
   }
 }
 
+/* Promo Banner - блок акции */
+.promo {
+  position: relative;
+  padding: 1rem 0;
+  background: linear-gradient(135deg, #e30613 0%, #ff4d5c 100%);
+  overflow: hidden;
+  margin-top: var(--header-h);
+  z-index: 10;
+}
+
+.promo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: promoShine 3s infinite;
+}
+
+@keyframes promoShine {
+  0% {
+    left: -100%;
+  }
+  20%, 100% {
+    left: 100%;
+  }
+}
+
+.promo__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.promo__icon {
+  font-size: 2rem;
+  animation: promoPulse 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes promoPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.promo__content {
+  text-align: center;
+}
+
+.promo__title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.25rem;
+}
+
+.promo__text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.promo__highlight {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 0.2rem 0.8rem;
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .promo {
+    padding: 0.75rem 0;
+  }
+
+  .promo__inner {
+    gap: 0.75rem;
+    padding: 0 1rem;
+  }
+
+  .promo__icon {
+    font-size: 1.5rem;
+  }
+
+  .promo__title {
+    font-size: 0.8rem;
+  }
+
+  .promo__text {
+    font-size: 0.9rem;
+  }
+
+  .promo__highlight {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.6rem;
+  }
+}
+
+@media (max-width: 550px) {
+  .promo__inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .promo__icon {
+    margin-bottom: 0.25rem;
+  }
+}
+
 /* Hero */
 .hero {
   position: relative;
   min-height: min(92vh, 820px);
   display: flex;
   align-items: flex-end;
-  padding-top: calc(var(--header-h) + 3rem);
+  padding-top: calc(var(--header-h) + 1rem);
   padding-bottom: 4rem;
   overflow: hidden;
 }
@@ -342,7 +465,7 @@ button {
 
 .hero__lead {
   font-size: 1.05rem;
-  color: var(--text-muted);
+  color: #deeae3;
   margin: 0 0 2rem;
 }
 
@@ -367,7 +490,7 @@ button {
 @media (max-width: 768px) {
   .hero {
     min-height: min(85vh, 700px);
-    padding-top: calc(var(--header-h) + 2rem);
+    padding-top: calc(var(--header-h) + 0.5rem);
     padding-bottom: 3rem;
   }
 
@@ -406,7 +529,7 @@ button {
 @media (max-width: 480px) {
   .hero {
     min-height: min(80vh, 600px);
-    padding-top: calc(var(--header-h) + 1.5rem);
+    padding-top: calc(var(--header-h) + 0.5rem);
     padding-bottom: 2rem;
   }
 

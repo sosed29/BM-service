@@ -4,14 +4,10 @@
   /** Координаты точки «БМ автоцентр» (Яндекс.Карты: ll=lon,lat) */
   const DEST_LAT = 45.072376;
   const DEST_LON = 39.021522;
-  const DEST_NAME = "БМ автоцентр";
 
-  // ПРЯМАЯ ССЫЛКА НА ОРГАНИЗАЦИЮ В ЯНДЕКС.НАВИГАТОРЕ
-  const YANDEX_NAVI_ORG_URL =
-    "https://yandex.com/maps/org/bm/131521270282?si=2mqumcbrd1fjz9jayxmg73ykq8";
-
-  const MAPS_ORG_URL =
-    "https://yandex.ru/maps/org/bm/131521270282/?ll=39.021522%2C45.072376&z=17";
+  // ПРЯМАЯ ССЫЛКА НА ОРГАНИЗАЦИЮ В ЯНДЕКС.КАРТАХ
+  const YANDEX_MAPS_ORG_URL =
+    "https://yandex.com/maps/org/bm/131521270282/?ll=39.021522%2C45.072376&z=13";
 
   const IMG_FALLBACK = "img/placeholder.svg";
 
@@ -19,7 +15,8 @@
   const TELEGRAM_BOT_TOKEN = "8664964975:AAH38cl0YEYfWkYpGCGqv7rRtkwqAAnFAGM";
 
   // ⚠️⚠️⚠️ ВАЖНО: ЗАМЕНИТЕ 0 НА РЕАЛЬНЫЙ CHAT ID ⚠️⚠️⚠️
-  const TELEGRAM_CHAT_ID = 8445331017; // <--- СЮДА ВСТАВЬТЕ CHAT ID ПОСЛЕ ТОГО КАК СОТРУДНИК НАЖМЕТ СТАРТ
+  // Chat ID для БМ Автоцентр
+  const TELEGRAM_CHAT_ID = 8445331017; // БМ Автоцентр
 
   const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
@@ -33,7 +30,7 @@
     },
     {
       title: "Замена свечей (за 4 шт.)",
-      price: "1 000 ₽",
+      price: "от 1 000 ₽",
       desc: "Комплексная замена комплекта свечей зажигания.",
       category: "engine",
     },
@@ -51,7 +48,7 @@
     },
     {
       title: "Замена рулевой рейки",
-      price: "5 000 ₽",
+      price: "6 000 ₽",
       desc: "Замена рулевой рейки (съём-установка).",
       category: "steering",
     },
@@ -99,19 +96,19 @@
     },
     {
       title: "Замена сцепления МКПП",
-      price: "5 000 ₽",
+      price: "8 000 ₽",
       desc: "Производим замену сцепления механических кпп. Стоимость услуги зависит от марки автомобиля.",
       category: "transmission",
     },
     {
       title: "Аппаратная замена антифриза + промывка системы охлаждения",
-      price: "2 500 ₽",
+      price: "4 000 ₽",
       desc: "Оказываем услуги по аппаратной замене антифриза, а также делаем промывку системы охлаждения в два этапа с применением химии.",
       category: "cooling",
     },
     {
       title: "Замена тормозных колодок, дисков и барабанов",
-      price: "1 000 ₽",
+      price: "1 500 ₽",
       desc: "Делаем замену колодок, тормозных дисков и барабанов. Также производим полный спектр обслуживания тормозной системы, в том числе с электроручником.",
       category: "brakes",
     },
@@ -135,7 +132,7 @@
     },
     {
       title: "Регулировка Сход - развал",
-      price: "1 500 ₽",
+      price: "2 000 ₽",
       desc: "Регулировка углов установки колёс производится на своевременно обслуженном и откалиброванном оборудование. Раз год обновляется база автомобилей.",
       category: "wheel",
     },
@@ -177,14 +174,8 @@
     return "img/service-" + (1 + indexInCatalog) + ".jpg";
   }
 
-  /**
-   * Открытие Яндекс.Карт/Навигатор с карточкой организации
-   * Просто открываем ссылку - браузер сам предложит открыть в приложении
-   */
-  function openYandexNavigator() {
-    console.log("Открываем: " + YANDEX_NAVI_ORG_URL);
-    // Открываем ссылку в новой вкладке
-    window.open(YANDEX_NAVI_ORG_URL, "_blank", "noopener,noreferrer");
+  function openMap() {
+    window.open(YANDEX_MAPS_ORG_URL, "_blank", "noopener,noreferrer");
   }
 
   let toastTimeout = null;
@@ -216,8 +207,7 @@
   }
 
   function buildRoute() {
-    showToast("📍 Открываем карту...");
-    openYandexNavigator();
+    openMap();
   }
 
   function imgFallbackAttr() {
@@ -285,7 +275,7 @@
   }
 
   function bindRouteButtons() {
-    const buttonIds = ["btn-route", "btn-route-2", "btn-route-footer"];
+    const buttonIds = ["btn-route", "btn-route-footer"];
     buttonIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
@@ -298,11 +288,6 @@
   }
 
   async function sendTelegramNotification(bookingData) {
-    if (TELEGRAM_CHAT_ID === 0) {
-      console.warn("⚠️ Telegram Chat ID не настроен");
-      return false;
-    }
-
     const message = `
 📢 <b>НОВАЯ ЗАЯВКА НА ЗАПИСЬ!</b>
 ━━━━━━━━━━━━━━━━━━━━━
@@ -325,9 +310,15 @@
         }),
       });
       const result = await response.json();
-      return result.ok;
+      if (result.ok) {
+        console.log("✅ Уведомление отправлено в Telegram");
+        return true;
+      } else {
+        console.error("❌ Ошибка Telegram API:", result);
+        return false;
+      }
     } catch (error) {
-      console.error("Ошибка отправки в Telegram:", error);
+      console.error("❌ Ошибка отправки в Telegram:", error);
       return false;
     }
   }
@@ -360,6 +351,7 @@
         }
         form.reset();
       } catch (error) {
+        console.error("Ошибка:", error);
         showToast("❌ Ошибка. Попробуйте позвонить.", true);
       } finally {
         submitBtn.textContent = originalText;
